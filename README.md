@@ -8,12 +8,12 @@
 </p>
 
 ### 🛠 Technologies
+
 - [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
 - [Bootstrap](https://getbootstrap.com/docs/5.0/getting-started/introduction/)
 - [Flask](https://flask.palletsprojects.com/en/2.2.x/)
 - [Python](https://docs.python.org/3/)
-- [Vercel](https://vercel.com/)
-
+- [Docker](https://docs.docker.com/)
 
 ### 🚀 Features
 
@@ -23,6 +23,5 @@
 - [ ] User account
 
 ### 🚧 Production
-
 
 [Link for 'To-do List' in Production]()

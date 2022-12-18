@@ -1,0 +1,21 @@
+# folders
+
+instance/
+.idea/
+__pycache__/
+
+
+# files
+.store.db
+
+# Environments
+
+.myenv
+.env
+.venv
+env/
+venv/
+myenv/
+ENV/
+env.bak/
+venv.bak/
