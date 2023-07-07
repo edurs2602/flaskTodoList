@@ -25,3 +25,5 @@
 ### 🚧 Production
 
 [Link for 'To-do List' in Production]()
+
+[![Build Status](https://app.travis-ci.com/edurs2602/flaskTodoList.svg?branch=main)](https://app.travis-ci.com/edurs2602/flaskTodoList)
