@@ -1,6 +1,5 @@
 # folders
 
-instance/
 .idea/
 __pycache__/
 
@@ -8,9 +7,11 @@ __pycache__/
 # files
 .store.db
 .gitignore
+gitignore
 
 # Environments
 
+myenv
 .myenv
 .env
 .venv
@@ -20,3 +21,4 @@ myenv/
 ENV/
 env.bak/
 venv.bak/
+myenv/
