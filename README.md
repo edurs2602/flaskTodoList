@@ -1,4 +1,7 @@
 <h1 align="center"> To-Do App <h1>
+
+[![Build Status](https://app.travis-ci.com/edurs2602/flaskTodoList.svg?branch=main)](https://app.travis-ci.com/edurs2602/flaskTodoList)
+
 <h2 align="center"> A to-do app list made in Flask <h2>
 
 <p align="center">
@@ -24,6 +27,4 @@
 
 ### 🚧 Production
 
-[Link for 'To-do List' in Production]()
-
-[![Build Status](https://app.travis-ci.com/edurs2602/flaskTodoList.svg?branch=main)](https://app.travis-ci.com/edurs2602/flaskTodoList)
+[Link for 'To-do List' in Production](https://flask-todo-list-46b2c55a626f.herokuapp.com/)
