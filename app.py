@@ -11,6 +11,14 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    username = request.form['username']
+    email = request.form['email']
+    pwd = request.form['password']
+
+    newUser = User(username, email, pwd)
+    db.session.add(newUser)
+    db.session.commit()
+
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
