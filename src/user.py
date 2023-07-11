@@ -14,22 +14,25 @@ def register():
         newUser = User(username, email, pwd)
         db.session.add(newUser)
         db.session.commit()
+
+        return redirect('/')
     
 
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    email = request.form['email']
-    pwd = request.form['password']
+    if request.method == 'POST':
+        email = request.form['email']
+        pwd = request.form['password']
 
-    user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
 
-    if not user or user.check_password(pwd):
-        return redirect('/')
+        if not user or not user.check_password(pwd):
+            return redirect('/')
 
         login_user(user)
-        return redirect('/')
+        return redirect('/todo')
 
     return render_template('login.html')
 

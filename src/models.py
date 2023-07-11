@@ -16,10 +16,10 @@ class User(db.Model, UserMixin):
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
-        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     def check_password(self, pwd):
-        return bcrypt.check_password_hash(self.password, pwd)
+        return bcrypt.checkpw(pwd.encode('utf-8'), self.password)
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
