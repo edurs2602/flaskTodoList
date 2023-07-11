@@ -15,7 +15,7 @@ def register():
         db.session.add(newUser)
         db.session.commit()
 
-        return redirect('/')
+        return redirect('/login.html')
     
 
     return render_template('register.html')
@@ -32,13 +32,13 @@ def login():
             return redirect('/')
 
         login_user(user)
-        return redirect('/todo')
+        return redirect('/')
 
     return render_template('login.html')
 
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+def get_user(user_id):
+    return User.query.filter_by(id=user_id).first()
 
 @login_manager.request_loader
 def load_user_from_request(request):
@@ -47,7 +47,7 @@ def load_user_from_request(request):
 
 @app.route('/logout')
 def logout():
-    login_user()
-    return redirect(url_for('/login'))
+    logout_user()
+    return redirect(url_for('login'))
 
 
