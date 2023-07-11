@@ -7,32 +7,37 @@ from src.models import Todo
 @app.route("/todo")
 @login_required
 def index():
-    todo_lista = Todo.query.all()
-    return render_template('todo.html', todo_list=todo_lista)
+    todo_list = Todo.query.filter_by(user_id=current_user.id).all()
+    return render_template('todo.html', todo_list=todo_list)
 
 @app.route("/add", methods=['POST'])
 @login_required
 def add():
     task = request.form.get('task')
-    newToDo = Todo(
+    new_todo = Todo(
         task=task,
-        complete=False
+        complete=False,
+        user_id=current_user.id
     )
-    db.session.add(newToDo)
+    db.session.add(new_todo)
     db.session.commit()
     return redirect('/todo')
 
 @app.route("/update/<int:todo_id>")
 @login_required
 def update(todo_id):
-    todoId = Todo.query.filter_by(id=todo_id).update(dict(complete=True))
-    db.session.commit()
+    todo = Todo.query.filter_by(id=todo_id).first()
+    if todo.user_id == current_user.id:
+        todo.complete = True
+        db.session.commit()
     return redirect('/todo')
 
 @app.route("/delete/<int:todo_id>")
 @login_required
 def delete(todo_id):
-    todoId = Todo.query.filter_by(id=todo_id).delete()
-    db.session.commit()
+    todo = Todo.query.filter_by(id=todo_id).first()
+    if todo.user_id == current_user.id:
+        db.session.delete(todo)
+        db.session.commit()
     return redirect('/todo')
 

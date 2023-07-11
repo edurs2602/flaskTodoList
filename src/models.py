@@ -23,6 +23,9 @@ class User(db.Model, UserMixin):
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    task = db.Column(db.String(128))
+    task = db.Column(db.String(128), nullable=False)
     complete = db.Column(db.Boolean)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('todos', lazy=True))
     
