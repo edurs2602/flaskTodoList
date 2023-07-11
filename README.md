@@ -27,4 +27,4 @@
 
 ### 🚧 Production
 
-[Link for 'To-do List' in Production](https://flask-todo-list-46b2c55a626f.herokuapp.com/)
+[Link for 'To-do List' in Production](https://todo-list-flask-da924367090d.herokuapp.com/)

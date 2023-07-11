@@ -14,30 +14,65 @@ def index():
 @login_required
 def add():
     task = request.form.get('task')
-    new_todo = Todo(
-        task=task,
-        complete=False,
-        user_id=current_user.id
-    )
-    db.session.add(new_todo)
-    db.session.commit()
+    error = None
+
+    if task == "":
+        error = "Task null error"
+        context = {
+            'error' : error
+        }
+
+        return render_template('error.html', **context)
+
+    try:
+        new_todo = Todo(
+            task=task,
+            complete=False,
+            user_id=current_user.id
+        )
+        db.session.add(new_todo)
+        db.session.commit()
+    except:
+        error = "Todo create error"
+        context = {
+            'error' : error
+        }
+
+        return render_template('error.html', **context)
+
     return redirect('/todo')
 
 @app.route("/update/<int:todo_id>")
 @login_required
 def update(todo_id):
-    todo = Todo.query.filter_by(id=todo_id).first()
-    if todo.user_id == current_user.id:
-        todo.complete = True
-        db.session.commit()
-    return redirect('/todo')
+    try:
+        todo = Todo.query.filter_by(id=todo_id).first()
+        if todo.user_id == current_user.id:
+            todo.complete = True
+            db.session.commit()
+        return redirect('/todo')
+    except:
+        error = "Todo update error"
+        context = {
+            'error' : error
+        }
+
+        return render_template('error.html', **context)
 
 @app.route("/delete/<int:todo_id>")
 @login_required
 def delete(todo_id):
-    todo = Todo.query.filter_by(id=todo_id).first()
-    if todo.user_id == current_user.id:
-        db.session.delete(todo)
-        db.session.commit()
-    return redirect('/todo')
+    try:
+        todo = Todo.query.filter_by(id=todo_id).first()
+        if todo.user_id == current_user.id:
+            db.session.delete(todo)
+            db.session.commit()
+        return redirect('/todo')
+    except:
+        error = "Todo delete error"
+        context = {
+            'error' : error
+        }
+
+        return render_template('error.html', **context)
 
