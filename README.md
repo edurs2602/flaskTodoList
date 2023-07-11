@@ -23,7 +23,7 @@
 - [x] Create Task's
 - [x] Update Task's
 - [x] Delete Task's
-- [ ] User account
+- [x] User account
 
 ### 🚧 Production
 
