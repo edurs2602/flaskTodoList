@@ -17,7 +17,7 @@
   <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">Home</a>
+    <a class="navbar-brand" href="/todo">Home</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado" aria-controls="conteudoNavbarSuportado" aria-expanded="false" aria-label="Alterna navegação">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -28,11 +28,12 @@
           <a class="nav-link" href="/todo">Todo</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="#">{{current_user.username}} - {{current_user.email}}</a>
+          <a class="nav-link" href="/user">{{current_user.username}} - {{current_user.email}}</a>
         </li>
         <li class="nav-item" >
           <a class="nav-link" href="{{ url_for('logout') }}">logout</a>
         </li>
+      </ul>
     </div>
   </nav>
 </head>
@@ -58,6 +59,7 @@
       </div>
     </div>
   </div>
+
 
   <footer>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -75,7 +77,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>To-Do List</title>
   <link
   href="https://fonts.googleapis.com/css?family=Open Sans:400,700"
   rel="stylesheet"
@@ -90,7 +92,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado" aria-controls="conteudoNavbarSuportado" aria-expanded="false" aria-label="Alterna navegação">
       <span class="navbar-toggler-icon"></span>
     </button>
-  
+
     <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
@@ -102,35 +104,110 @@
     </div>
   </nav>
 </head>
-<body>
+<body class="bg-light">
+  <div class="container">
+    <div class="py-5 text-center">
+      <h2>To-Do List</h2>
+      <p class="lead" id="loginInfo">If you are logged in, your tasks will be saved and kept for future access from any device.</p>
+    </div>
 
-  <div class="container mt-4">
     <div class="row">
-      <div class="col-md-4">
-        <div class="card">
-          <img src="images/todolist-vector-removebg-preview.png" class="card-img-top" alt="Todo List Image">
-        </div>
-      </div>
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body" style="background-color: #e7dce7;">
-            <h2>What is a todo list?</h2>
-            <p>A to-do list is a simple and effective tool used to manage tasks and keep track of things that need to be done. It is a list of items or activities that need to be accomplished or completed within a certain timeframe.</p>
-            <p>People use to-do lists to organize their tasks, prioritize activities, and ensure that nothing important is forgotten. Each item on the list typically includes a brief description of the task and may include additional details such as deadlines, due dates, or notes.</p>
-            <p>To-do lists can be created in various formats, such as handwritten lists, digital applications, or specialized productivity tools. They are widely used in personal life, work settings, project management, and other contexts where task management is important.</p>
-            <p>By using a to-do list, individuals can enhance their productivity, maintain focus, and have a clear overview of their responsibilities and goals. It helps to stay organized, reduce stress, and improve time management by providing a visual representation of pending tasks and progress.</p>
+      <div class="list-group mb-3">
+        <div class="card p-2">
+          <div class="form-floating">
+            <input class="form-control" type="text" id="newTaskInput" placeholder="Task">
+            <label for="newTaskInput">Task</label>
+            <br>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button onclick="addTask()" class="btn btn-secondary pull-right">Submit</button>
+            </div>
           </div>
         </div>
       </div>
+
+      <br>
+
+      <ul class="list-group mb-3" id="taskList">
+      </ul>
     </div>
   </div>
 
-  <footer>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </footer>
+  <script>
+      //Logica para o to-do list do index
+      document.addEventListener('DOMContentLoaded', loadTasks);
+
+      function addTask() {
+          const input = document.getElementById('newTaskInput');
+          const task = input.value.trim();
+          if (task) {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks.push({ id: Date.now(), task: task, complete: false });
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            input.value = '';
+            loadTasks();
+          }
+        }
+
+      function loadTasks() {
+          const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+          const taskList = document.getElementById('taskList');
+          taskList.innerHTML = '';
+          tasks.forEach(task => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item justify-content-between lh-condensed';
+            li.innerHTML = `
+              <div>
+                <span class="${task.complete ? 'text-decoration-line-through' : ''}">${task.task}</span>
+                <button onclick="toggleTask(${task.id})" class="btn btn-outline-info">${task.complete ? 'Undo' : 'Complete'}</button>
+                <button onclick="deleteTask(${task.id})" class="btn btn-outline-danger">Delete</button>
+              </div>
+            `;
+            taskList.appendChild(li);
+          });
+        }
+
+      function toggleTask(id) {
+          const tasks = JSON.parse(localStorage.getItem('tasks'));
+          const taskIndex = tasks.findIndex(task => task.id === id);
+          if (taskIndex > -1) {
+            tasks[taskIndex].complete = !tasks[taskIndex].complete;
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            loadTasks();
+          }
+        }
+
+      function deleteTask(id) {
+          let tasks = JSON.parse(localStorage.getItem('tasks'));
+          tasks = tasks.filter(task => task.id !== id);
+          localStorage.setItem('tasks', JSON.stringify(tasks));
+          loadTasks();
+        }
+
+
+      //Logica para alterar o texto para a linguagem do navegador
+      document.addEventListener('DOMContentLoaded', () => {
+          loadTasks(); // Call your existing functions here
+          setLanguageText(); // Set text based on language
+      });
+
+      function setLanguageText() {
+          const userLang = navigator.language || navigator.userLanguage;
+          const title = document.getElementById('title');
+          const loginInfo = document.getElementById('loginInfo');
+
+
+          if (userLang.startsWith('pt')) {
+            title.textContent = 'Lista de Tarefas';
+            loginInfo.textContent = 'Se você estiver logado, suas tarefas serão salvas e mantidas para acesso futuro de qualquer dispositivo.';
+          } else if (userLang.startsWith('es')) {
+            title.textContent = 'Lista de Tareas';
+            loginInfo.textContent = 'Si está registrado, sus tareas se guardarán y se mantendrán para acceso futuro desde cualquier dispositivo.';
+          }
+      }
+
+  </script>
 </body>
+
 </html>
 
 {% endif %}

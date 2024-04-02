@@ -4,5 +4,14 @@ services:
     build: .
     ports:
       - "8000:5000"
+  db:
+    image: postgres
+    restart: always
+    environment:
+        - POSTGRES_USER=todolist
+        - POSTGRES_PASSWORD=todolist
+    volumes:
+        - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+        - ./postgres-data:/var/lib/postgresql/data
   redis:
     image: "redis:alpine"

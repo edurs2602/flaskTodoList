@@ -1,8 +1,10 @@
 from flask import Flask, render_template, url_for, redirect, request
-from flask_login import login_user, logout_user
-
+from flask_login import login_user, logout_user, current_user
+from sqlalchemy.exc import IntegrityError
 from src import db, app, login_manager
 from src.models import User
+import logging
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -17,16 +19,20 @@ def register():
             db.session.commit()
 
             return redirect('/')
-        
 
         return render_template('register.html')
-    except:
-        error = "User register error"
-        context = {
-            'error' : error
-        }
+    except IntegrityError as e:
+        db.session.rollback()
+        error = "This email is already registered."
+        logging.error(f"IntegrityError: {e}")
+    except Exception as e:
+        error = "An unexpected error occurred during registration."
+        logging.error(f"Exception: {e}")
+    finally:
+        if 'error' in locals():
+            context = {'error': error}
+            return render_template('error.html', **context)
 
-        return render_template('error.html', **context)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -38,28 +44,38 @@ def login():
             user = User.query.filter_by(email=email).first()
 
             if not user or not user.check_password(pwd):
-                return redirect('/')
+                error = "Invalid email or password."
+                print(error)
+                return render_template('login.html',
+                                       error=error)
 
             login_user(user)
-            return redirect('/')
+            return redirect('/todo')
 
         return render_template('login.html')
-    except:
+    except Exception as e:
         error = "User login error"
-        context = {
-            'error' : error
-        }
-
+        logging.error(f"Exception during login: {e}")
+        context = {'error': error}
         return render_template('error.html', **context)
+
 
 @login_manager.user_loader
 def get_user(user_id):
     return User.query.filter_by(id=user_id).first()
 
+
 @login_manager.request_loader
 def load_user_from_request(request):
     user = User.query.filter_by(username=request.form.get('username')).first()
     return user
+
+
+@app.route('/user')
+def user():
+    user = get_user(current_user.id)
+    return render_template('user.html', user=user)
+
 
 @app.route('/logout')
 def logout():

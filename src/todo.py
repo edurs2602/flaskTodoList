@@ -4,11 +4,13 @@ from flask_login import login_user, logout_user, current_user, login_required
 from src import db, app, user
 from src.models import Todo
 
+
 @app.route("/todo")
 @login_required
 def index():
     todo_list = Todo.query.filter_by(user_id=current_user.id).all()
     return render_template('todo.html', todo_list=todo_list)
+
 
 @app.route("/add", methods=['POST'])
 @login_required
@@ -19,7 +21,7 @@ def add():
     if task == "":
         error = "Task null error"
         context = {
-            'error' : error
+            'error': error
         }
 
         return render_template('error.html', **context)
@@ -35,12 +37,13 @@ def add():
     except:
         error = "Todo create error"
         context = {
-            'error' : error
+            'error': error
         }
 
         return render_template('error.html', **context)
 
     return redirect('/todo')
+
 
 @app.route("/update/<int:todo_id>")
 @login_required
@@ -49,15 +52,17 @@ def update(todo_id):
         todo = Todo.query.filter_by(id=todo_id).first()
         if todo.user_id == current_user.id:
             todo.complete = True
+            current_user.complete_task()
             db.session.commit()
         return redirect('/todo')
     except:
         error = "Todo update error"
         context = {
-            'error' : error
+            'error': error
         }
 
         return render_template('error.html', **context)
+
 
 @app.route("/delete/<int:todo_id>")
 @login_required
@@ -71,8 +76,7 @@ def delete(todo_id):
     except:
         error = "Todo delete error"
         context = {
-            'error' : error
+            'error': error
         }
 
         return render_template('error.html', **context)
-
